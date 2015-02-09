@@ -1,0 +1,130 @@
+/* line 12, ../../scss/admin.scss */
+* {
+  font-family: "Helvetica Neue", Helvetica, "Meiryo UI", "Segoe UI", Arial, freesans, sans-serif;
+}
+
+/* line 16, ../../scss/admin.scss */
+html {
+  overflow-y: scroll;
+}
+
+/* line 20, ../../scss/admin.scss */
+li {
+  list-style: none;
+}
+
+/* line 24, ../../scss/admin.scss */
+.section {
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 1040px;
+}
+
+/* line 31, ../../scss/admin.scss */
+.search-form {
+  width: 100%;
+  margin-left: 40px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #9B5800;
+}
+
+/* line 39, ../../scss/admin.scss */
+.search-text {
+  width: 30%;
+  height: 30px;
+  padding: 2px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+/* line 48, ../../scss/admin.scss */
+.search-status {
+  padding: 2px;
+  height: 30px;
+  vertical-align: middle;
+}
+
+/* line 54, ../../scss/admin.scss */
+.search-button {
+  border: none;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  padding: 2px;
+  cursor: pointer;
+  color: #053A64;
+  background-color: #4D8BBB;
+}
+/* line 64, ../../scss/admin.scss */
+.search-button:hover {
+  background-color: #053A64;
+  color: #4D8BBB;
+}
+
+/* line 70, ../../scss/admin.scss */
+.order-list {
+  width: 100%;
+  text-align: center;
+}
+
+/* line 75, ../../scss/admin.scss */
+.order, .order--non-support, .order--complete, .order--cancel {
+  padding: 10px;
+  letter-spacing: -.40em;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 1px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 0 1px;
+}
+
+/* line 84, ../../scss/admin.scss */
+.order--non-support {
+  background-color: rgba(252, 144, 0, 0.1);
+}
+
+/* line 89, ../../scss/admin.scss */
+.order--complete {
+  background-color: rgba(221, 221, 221, 0.3);
+}
+
+/* line 94, ../../scss/admin.scss */
+.order--cancel {
+  background-color: rgba(10, 96, 162, 0.1);
+}
+
+/* line 99, ../../scss/admin.scss */
+.order-column {
+  text-align: left;
+  letter-spacing: normal;
+  display: inline-block;
+  width: 25%;
+  vertical-align: top;
+  font-size: small;
+}
+
+/* line 108, ../../scss/admin.scss */
+.order__trading-id {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+/* line 113, ../../scss/admin.scss */
+.order__update-message {
+  margin: 0;
+}
+
+/* line 117, ../../scss/admin.scss */
+.order__status {
+  padding: 5px;
+  color: #333;
+}
+
+/* line 126, ../../scss/admin.scss */
+.order__text {
+  margin: 0 0 5px 0;
+}
