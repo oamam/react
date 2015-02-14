@@ -1,3 +1,7 @@
+var orders = [
+    {}
+]
+
 var SearchForm = React.createClass({
     handleChange: function() {
         this.props.onSearchInput(this.refs.searchText.getDOMNode().value);
@@ -37,14 +41,10 @@ var OrderClumnOnLeft = React.createClass({
     },
     __updateStatus: function(status, tradingId, modified) {
         $.ajax({
-            url: 'admin.php',
+            url: '/echo/json/',
             dataType: 'json',
             type: 'POST',
-            data: {
-                status: status,
-                trading_id: tradingId,
-                modified: modified
-            },
+            data: {},
             success: function(data) {
                 this.setState({status: status, msg: '更新しました。'});
                 this.props.onChangingModified(modified, status);
@@ -214,6 +214,7 @@ var Section = React.createClass({
     }
 });
 
+console.log(orders.length);
 React.render(
     React.createElement(Section, {orders: orders}),
     document.getElementById('content')
