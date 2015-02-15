@@ -1,33 +1,71 @@
+var randobet = function(n, b) {
+    b = b || '';
+    var a = 'abcdefghijklmnopqrstuvwxyz'
+        + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        + '0123456789'
+        + b;
+    a = a.split('');
+    var s = '';
+    for (var i = 0; i < n; i++) {
+        s += a[Math.floor(Math.random() * a.length)];
+    }
+    return s;
+};
+
 var orders = [
-    {}
-]
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'},
+    {'trading_id': randobet(10),'first_name': 'masashi','last_name': 'amao','email': 'example@google.com','phone': '123456789','number': '10','zip': '123456789','address_line_1': 'address_line_1','address_line_2': 'address_line_2','city': 'city','spr': 'spr','country': 'country','created': '2000-01-01 00:00:00','modified': '2000-01-01 00:00:00'}
+];
 
 var SearchForm = React.createClass({
-    handleChange: function() {
-        this.props.onSearchInput(this.refs.searchText.getDOMNode().value);
+    handleSearch: function() {
+        this.props.onSearch(this.refs.searchText.getDOMNode().value);
     },
     render: function() {
         return (
-            React.createElement(
-                'form',
-                {className: 'search-form'},
-                React.createElement('input', {className: 'search-text', placeholder: 'キーワードを入力してください', ref: 'searchText', onChange: this.handleChange, value: this.props.searchText})
-            )
+            <form className="search-form">
+                <input type="text" className="search-text" placeholder="キーワードを入力してください" ref="searchText" onChange={this.handleSearch} value={this.props.searchText} />
+            </form>
         );
     }
 });
 
-var OrderClumnOnLeft = React.createClass({
+
+var Order = React.createClass({
     getInitialState: function() {
-        return {status: this.props.status, msg: ''};
+        var selectedStatus = this.__getselectedStatus(this.props.status);
+        return {
+            modified: this.props.modified,
+            className: 'order--' + selectedStatus,
+            message: ''
+        };
     },
-    handleChangingStatus: function() {
+    handlerStatusChange: function() {
         var status = this.refs.orderStatus.getDOMNode().value;
-        var nowDate = new Date();
-        var modified = this.__createModified(nowDate);
-        this.__updateStatus(status, this.props.tradingId, modified);
+        var tradingId = this.props.tradingId;
+        var modified = this.__createModified();
+        var selectedStatus = this.__getselectedStatus(status);
+        this.props.onStatusChange(tradingId, status, modified);
+        this.setState({
+            modified: modified,
+            className: 'order--' + selectedStatus,
+            message: '更新しました。'
+        });
+        
+        var $orderMessage = $(this.refs.orderMessage.getDOMNode());
+        setTimeout(function() {
+            $orderMessage.fadeOut(1000, function() {$orderMessage.empty(); });
+        }, 1000);
     },
-    __createModified: function(nowDate) {
+    __createModified: function() {
+        var nowDate = new Date();
         return nowDate.getFullYear() + 
             '-' + ('0' + nowDate.getMonth() + 1).slice(-2) + 
             '-' + ('0' + nowDate.getDate()).slice(-2) + 
@@ -35,54 +73,6 @@ var OrderClumnOnLeft = React.createClass({
                 + ('0' + nowDate.getHours()).slice(-2) + 
             ':' + ('0' + nowDate.getMinutes()).slice(-2) + 
             ':' + ('0' + nowDate.getSeconds()).slice(-2);
-    },
-    __hideUpdateMessage: function() {
-        this.setState({msg: ''});
-    },
-    __updateStatus: function(status, tradingId, modified) {
-        $.ajax({
-            url: '/echo/json/',
-            dataType: 'json',
-            type: 'POST',
-            data: {},
-            success: function(data) {
-                this.setState({status: status, msg: '更新しました。'});
-                this.props.onChangingModified(modified, status);
-                setTimeout(this.__hideUpdateMessage, 2000);
-            }.bind(this),
-            error: function() {
-                this.setState({msg: '更新できませんでした。'});
-                setTimeout(this.__hideUpdateMessage, 2000);
-            }.bind(this)
-        });
-    },
-    render: function() {
-        var options = [{text: '未対応', value: 0, selectedClass: 'non-support'}, {text: '発注手続済', value: 1, selectedClass: 'complete'}, {text: 'キャンセル', value: 9, selectedClass: 'cancel'}];
-        var selectedStatus = ''
-        var optionNodes = $.map(options, function(option) {
-            return React.createElement('option', {value: option.value}, option.text)
-        });
-
-        return (
-            React.createElement(
-                'div',
-                {className: 'order-column'},
-                React.createElement('p', {className: 'order__trading-id'}, this.props.tradingId),
-                React.createElement('select', {className: 'order__status', onChange: this.handleChangingStatus, ref: 'orderStatus', value: this.state.status}, optionNodes),
-                React.createElement('p', {className: 'order__update-message', ref: 'updateMessage'}, this.state.msg)
-            )
-        );
-    }
-});
-
-var Order = React.createClass({
-    getInitialState: function() {
-        var selectedStatus = this.__getselectedStatus(this.props.status);
-        return {modified: this.props.modified, className: 'order--' + selectedStatus};
-    },
-    handlerChangingModified: function(modified, status) {
-        var selectedStatus = this.__getselectedStatus(status);
-        this.setState({modified: modified, className: 'order--' + selectedStatus});
     },
     __getselectedStatus: function(status) {
         var options = [{text: '未対応', value: 0, selectedStatus: 'non-support'}, {text: '発注手続済', value: 1, selectedStatus: 'complete'}, {text: 'キャンセル', value: 9, selectedStatus: 'cancel'}];
@@ -99,32 +89,32 @@ var Order = React.createClass({
     },
     render: function() {
         return (
-            React.createElement(
-                'li',
-                {className: this.state.className},
-                React.createElement(OrderClumnOnLeft, {status: this.props.status, tradingId: this.props.tradingId, onChangingModified: this.handlerChangingModified}),
-                React.createElement(
-                    'div',
-                    {className: 'order-column'},
-                    React.createElement('p', {className: 'order__text'}, this.props.userName),
-                    React.createElement('p', {className: 'order__text'}, this.props.email),
-                    React.createElement('p', {className: 'order__text'}, this.props.phone),
-                    React.createElement('p', {className: 'order__text'}, this.props.number)
-                ),
-                React.createElement(
-                    'div',
-                    {className: 'order-column'},
-                    React.createElement('p', {className: 'order__text'}, this.props.zip),
-                    React.createElement('p', {className: 'order__text'}, this.props.addressLine),
-                    React.createElement('p', {className: 'order__text'}, this.props.mainAddress)
-                ),
-                React.createElement(
-                    'div',
-                    {className: 'order-column'},
-                    React.createElement('p', {className: 'order__text'}, this.props.created),
-                    React.createElement('p', {className: 'order__text'}, this.state.modified)
-                )
-            )
+            <li className={this.state.selectedStatus} ref="order">
+                <div className="order-column">
+                    <p className="order__trading-id">{this.props.tradingId}</p>
+                    <select className="order__status" ref="orderStatus" onChange={this.handlerStatusChange} value={this.props.status}>
+                        <option value="0">未対応</option>
+                        <option value="1">発注手続済</option>
+                        <option value="9">キャンセル</option>
+                    </select>
+                    <p className="order__message" ref="orderMessage">{this.state.message}</p>
+                </div>
+                <div className="order-column">
+                    <p className="order__text">{this.props.userName}</p>
+                    <p className="order__text">{this.props.email}</p>
+                    <p className="order__text">{this.props.phone}</p>
+                    <p className="order__text">{this.props.number}</p>
+                </div>
+                <div className="order-column">
+                    <p className="order__text">{this.props.zip}</p>
+                    <p className="order__text">{this.props.addressLine}</p>
+                    <p className="order__text">{this.props.mainAddress}</p>
+                </div>
+                <div className="order-column">
+                    <p className="order__text">{this.props.created}</p>
+                    <p className="order__text">{this.state.modified}</p>
+                </div>
+            </li>
         );
     }
 });
@@ -155,8 +145,33 @@ var OrderList = React.createClass({
         );
     },
 
+    getInitialState: function() {
+        return {
+            orders: []
+        }
+    },
+
+    componentDidMount: function() {
+        this.setState({
+            orders: orders
+        });
+    },
+
+    handlerStatusChange: function(tradingId, status, modified) {
+        var i, l;
+        for (i = 0, l = orders.length; i < l; i++) {
+            if (orders[i].trading_id == tradingId) {
+                console.log(status);
+                orders[i].status = status;
+                orders[i].modified = modified;
+                break;
+            }
+        }
+        return true;
+    },
+
     render: function() {
-        var orderNodes = this.props.orders.map(function (order) {
+        var orderNodes = this.state.orders.map(function (order) {
             if (!this.__search(order)) {
                 return;
             }
@@ -165,6 +180,7 @@ var OrderList = React.createClass({
                 React.createElement(
                     Order,
                     {
+                        key: order.trading_id,
                         tradingId: order.trading_id,
                         userName: order.first_name + ' ' + order.last_name,
                         email: order.email,
@@ -175,7 +191,8 @@ var OrderList = React.createClass({
                         mainAddress: order.city + ' ' + order.spr + ' ' + order.country,
                         status: order.status,
                         created: order.created,
-                        modified: order.modified
+                        modified: order.modified,
+                        onStatusChange: this.handlerStatusChange
                     }
                 )
             );
@@ -193,29 +210,25 @@ var OrderList = React.createClass({
 var Section = React.createClass({
     getInitialState: function() {
         return {
-            searchText: '',
-            orders: this.props.orders
+            searchText: ''
         };
     },
-    handleSearchInput: function(searchText) {
+    handleSearch: function(searchText) {
         this.setState({
             searchText: searchText
         });
     },
     render: function() {
         return (
-            React.createElement(
-                'section',
-                {className: 'section'},
-                React.createElement(SearchForm, {searchText: this.state.searchText, onSearchInput: this.handleSearchInput}),
-                React.createElement(OrderList, {orders: this.state.orders, searchText: this.state.searchText})
-            )
+            <section className="section">
+                <SearchForm searchText={this.state.searchText} onSearch={this.handleSearch} />
+                <OrderList searchText={this.state.searchText} />
+            </section>
         );
     }
 });
 
-console.log(orders.length);
 React.render(
-    React.createElement(Section, {orders: orders}),
+    <Section />,
     document.getElementById('content')
 );
