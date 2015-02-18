@@ -32,6 +32,12 @@ var SearchForm = React.createClass({
         return (
             <form className="search-form">
                 <input type="text" className="search-text" placeholder="キーワードを入力してください" ref="searchText" onChange={this.handleSearch} value={this.props.searchText} />
+                <select className="search-status" ref="searchStatus" onChange={this.handleSearch} value={this.state.searchStatus}>
+                    <option value="">すべて</option>
+                    <option value="0">未対応</option>
+                    <option value="1">発注手続済</option>
+                    <option value="9">キャンセル</option>
+                </select>
             </form>
         );
     }
@@ -42,6 +48,7 @@ var Order = React.createClass({
     getInitialState: function() {
         var selectedStatus = this.__getselectedStatus(this.props.status);
         return {
+            status: this.props.status,
             modified: this.props.modified,
             className: 'order--' + selectedStatus,
             message: ''
@@ -54,14 +61,15 @@ var Order = React.createClass({
         var selectedStatus = this.__getselectedStatus(status);
         this.props.onStatusChange(tradingId, status, modified);
         this.setState({
+            status: status,
             modified: modified,
             className: 'order--' + selectedStatus,
             message: '更新しました。'
         });
-        
         var $orderMessage = $(this.refs.orderMessage.getDOMNode());
+        $orderMessage.show();
         setTimeout(function() {
-            $orderMessage.fadeOut(1000, function() {$orderMessage.empty(); });
+            $orderMessage.fadeOut(1000);
         }, 1000);
     },
     __createModified: function() {
@@ -92,7 +100,7 @@ var Order = React.createClass({
             <li className={this.state.selectedStatus} ref="order">
                 <div className="order-column">
                     <p className="order__trading-id">{this.props.tradingId}</p>
-                    <select className="order__status" ref="orderStatus" onChange={this.handlerStatusChange} value={this.props.status}>
+                    <select className="order__status" ref="orderStatus" onChange={this.handlerStatusChange} value={this.state.status}>
                         <option value="0">未対応</option>
                         <option value="1">発注手続済</option>
                         <option value="9">キャンセル</option>
@@ -122,6 +130,7 @@ var Order = React.createClass({
 var OrderList = React.createClass({
     __search: function(order) {
         return (
+            this.props.searchText === '' ||
             order.trading_id.indexOf(this.props.searchText) >= 0 ||
             order.trading_id.toLowerCase().indexOf(this.props.searchText.toLowerCase()) >= 0 ||
             order.first_name.indexOf(this.props.searchText) >= 0 ||
@@ -142,6 +151,9 @@ var OrderList = React.createClass({
             order.spr.toLowerCase().indexOf(this.props.searchText.toLowerCase()) >= 0 ||
             order.country.indexOf(this.props.searchText) >= 0 ||
             order.country.toLowerCase().indexOf(this.props.searchText.toLowerCase()) >= 0
+        ) && (
+            this.props.searchStatus === '' ||
+            order.status === this.props.searchStatus
         );
     },
 
@@ -210,19 +222,21 @@ var OrderList = React.createClass({
 var Section = React.createClass({
     getInitialState: function() {
         return {
-            searchText: ''
+            searchText: '',
+            searchStatus: ''
         };
     },
-    handleSearch: function(searchText) {
+    handleSearch: function(searchText, searchStatus) {
         this.setState({
-            searchText: searchText
+            searchText: searchText,
+            searchStatus: searchStatus
         });
     },
     render: function() {
         return (
             <section className="section">
-                <SearchForm searchText={this.state.searchText} onSearch={this.handleSearch} />
-                <OrderList searchText={this.state.searchText} />
+                <SearchForm searchText={this.state.searchText} searchStatus={this.state.searchStatus} onSearch={this.handleSearch} />
+                <OrderList searchText={this.state.searchText} searchStatus={this.state.searchStatus} />
             </section>
         );
     }
